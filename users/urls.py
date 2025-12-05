@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
-from users.views import WhoAmI
+from users.views import WhoAmI, LogoutView
 from users.api import PlayerViewSet, Register
 from rest_framework import routers
 
@@ -34,6 +34,13 @@ urlpatterns = [
         WhoAmI.as_view(),
         name='Who_am_I'
     ),
+
+    path(
+        'logout/',
+        LogoutView.as_view(),
+        name='logout'
+    ),
+
 
     path('', include(router.urls))
 
