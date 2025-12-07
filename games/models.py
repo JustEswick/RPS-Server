@@ -63,6 +63,8 @@ class Match(models.Model):
         ("R", "Rock"),
         ("P", "Paper"),
         ("S", "Scissors"),
+        ("L", "Lizard"),
+        ("Sp", "Spock"),
     ]
 
     RESULTS = [
@@ -75,9 +77,9 @@ class Match(models.Model):
         Player, on_delete=models.CASCADE, related_name="matches", verbose_name="Player")
 
     player_choice = models.CharField(
-        max_length=1, choices=CHOICES, blank=False, verbose_name="Player choice")
+        max_length=2, choices=CHOICES, blank=False, verbose_name="Player choice")
     machine_choice = models.CharField(
-        max_length=1, choices=CHOICES, blank=False, verbose_name="Machine choice")
+        max_length=2, choices=CHOICES, blank=False, verbose_name="Machine choice")
 
     # The results of the match for the player
     result = models.CharField(
@@ -104,12 +106,40 @@ class Match(models.Model):
         if self.player_choice == "R" and self.machine_choice == "S":
             return "W"
 
+        # Rock vs Lizard:
+        if self.player_choice == "R" and self.machine_choice == "L":
+            return "W"
+
         # Scissors vs Paper:
         if self.player_choice == "S" and self.machine_choice == "P":
             return "W"
 
+        # Scissors vs Lizard:
+        if self.player_choice == "S" and self.machine_choice == "L":
+            return "W"
+
         # Paper vs Rock:
         if self.player_choice == "P" and self.machine_choice == "R":
+            return "W"
+
+        # Paper vs Spock:
+        if self.player_choice == "P" and self.machine_choice == "Sp":
+            return "W"
+
+        # Lizard vs Paper:
+        if self.player_choice == "L" and self.machine_choice == "P":
+            return "W"
+
+        # Lizard vs Spock:
+        if self.player_choice == "L" and self.machine_choice == "Sp":
+            return "W"
+
+        # Spock vs Scissor:
+        if self.player_choice == "Sp" and self.machine_choice == "S":
+            return "W"
+
+        # Spock vs Rock:
+        if self.player_choice == "Sp" and self.machine_choice == "R":
             return "W"
 
         return "L"
