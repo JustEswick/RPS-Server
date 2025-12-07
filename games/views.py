@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
-from games.models import Match
+from games.models import Match, Record
 from games.serializers import GameSerializer
 # Create your views here.
 
@@ -26,15 +26,11 @@ class Play(APIView):
             player_choice=player_choice
         )
 
-        player_match.player.total_games += 1
-
-        if player_match.result == "W":
-            player_match.player.total_wins += 1
-
-        elif player_match.result == "L":
-            player_match.player.total_losses += 1
-
-        player_match.player.save()
+        if not player_match.result == "D":
+            Record.update_record(
+                player=request.user,
+                won=player_match.result == "W"
+            )
 
         return Response({
             "id": player_match.id,
@@ -42,5 +38,5 @@ class Play(APIView):
             "player_choice": player_match.player_choice,
             "machine_choice": player_match.machine_choice,
             "result": player_match.result,
-            "created_at": player_match.created_at
+            "created_at": player_match.created_at,
         }, status=status.HTTP_201_CREATED)

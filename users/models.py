@@ -5,14 +5,25 @@ from django.contrib.auth.models import AbstractUser
 
 class Player(AbstractUser):
 
-    total_wins = models.PositiveIntegerField(
-        default=0, blank=False, editable=True)
+    @property
+    def total_wins(self):
+        return self.matches.filter(result='W').count()
 
-    total_losses = models.PositiveIntegerField(
-        default=0, blank=False, editable=True)
+    @property
+    def total_losses(self):
+        return self.matches.filter(result='L').count()
 
-    total_games = models.PositiveIntegerField(
-        default=0, blank=False, editable=True)
+    @property
+    def total_draws(self):
+        return self.matches.filter(result='D').count()
 
-    def __str__(self):
-        return self.username
+    @property
+    def total_games(self):
+        return self.matches.count()
+
+    @property
+    def win_rate(self):
+        total = self.total_games
+        if total == 0:
+            return 0
+        return self.total_wins / total
